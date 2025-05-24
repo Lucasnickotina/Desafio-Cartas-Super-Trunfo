@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define NUM_CARTAS 3
+
+typedef struct {
+    char nome[20];
+    int forca;
+    int velocidade;
+    int inteligencia;
+} Carta;
+
+void exibirCarta(Carta c) {
+    printf("Nome: %s\n", c.nome);
+    printf("Força: %d\n", c.forca);
+    printf("Velocidade: %d\n", c.velocidade);
+    printf("Inteligência: %d\n", c.inteligencia);
+}
+
+int main() {
+    srand(time(NULL));
+
+    // Baralho com 3 cartas para simplicidade
+    Carta baralho[NUM_CARTAS] = {
+        {"Dragão", 90, 60, 70},
+        {"Fênix", 70, 80, 90},
+        {"Minotauro", 85, 55, 60}
+    };
+
+    // Sorteia carta do jogador e do computador
+    int idxJogador = rand() % NUM_CARTAS;
+    int idxComputador;
+
+    do {
+        idxComputador = rand() % NUM_CARTAS;
+    } while (idxComputador == idxJogador);
+
+    Carta jogador = baralho[idxJogador];
+    Carta computador = baralho[idxComputador];
+
+    printf("Sua carta:\n");
+    exibirCarta(jogador);
+
+    int escolha;
+    printf("\nEscolha o atributo para competir:\n");
+    printf("1 - Força\n");
+    printf("2 - Velocidade\n");
+    printf("3 - Inteligência\n");
+    printf("Digite sua escolha: ");
+    scanf("%d", &escolha);
+
+    int valorJogador, valorComputador;
+
+    switch(escolha) {
+        case 1:
+            valorJogador = jogador.forca;
+            valorComputador = computador.forca;
+            break;
+        case 2:
+            valorJogador = jogador.velocidade;
+            valorComputador = computador.velocidade;
+            break;
+        case 3:
+            valorJogador = jogador.inteligencia;
+            valorComputador = computador.inteligencia;
+            break;
+        default:
+            printf("Escolha inválida.\n");
+            return 1;
+    }
+
+    printf("\nCarta do computador:\n");
+    exibirCarta(computador);
+
+    if (valorJogador > valorComputador) {
+        printf("\nVocê venceu!\n");
+    } else if (valorJogador < valorComputador) {
+        printf("\nVocê perdeu!\n");
+    } else {
+        printf("\nEmpate!\n");
+    }
+
+    return 0;
+}
