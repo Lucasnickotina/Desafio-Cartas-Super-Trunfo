@@ -1,0 +1,75 @@
+#include <stdio.h>
+
+int main() {
+    int la, lb, lc, ld, le; // linhas dos navios
+    int ca, cb, cc, cd, ce; // colunas dos navios (0 = A, 1 = B, ..., 4 = E)
+
+    for (la = 1; la <= 5; la++)
+    for (lb = 1; lb <= 5; lb++) if (lb != la)
+    for (lc = 1; lc <= 5; lc++) if (lc != la && lc != lb)
+    for (ld = 1; ld <= 5; ld++) if (ld != la && ld != lb && ld != lc)
+    for (le = 1; le <= 5; le++) if (le != la && le != lb && le != lc && le != ld)
+    for (ca = 0; ca < 5; ca++)
+    for (cb = 0; cb < 5; cb++) if (cb != ca)
+    for (cc = 0; cc < 5; cc++) if (cc != ca && cc != cb)
+    for (cd = 0; cd < 5; cd++) if (cd != ca && cd != cb && cd != cc)
+    for (ce = 0; ce < 5; ce++) if (ce != ca && ce != cb && ce != cc && ce != cd) {
+
+        // Regras:
+
+        // 1. Arthur (A) não está na linha 1 nem coluna A (linha 1, coluna 0)
+        if (la == 1 || ca == 0) continue;
+
+        // 2. Bianca (B) está uma linha abaixo do Eduardo (E): lb = le + 1
+        if (lb != le + 1) continue;
+
+        // 3. Navio na coluna C está mais à esquerda que o da Daniela (D)
+        //   cc -> Caio, cd -> Daniela
+        if (cc >= cd) continue;
+
+        // 4. Caio (C) está em uma linha par
+        if (lc % 2 != 0) continue;
+
+        // 5. Daniela não está na linha 5 nem na coluna E
+        if (ld == 5 || cd == 4) continue;
+
+        // 6. Navio na linha 3 está na mesma coluna que o Arthur
+        //   Quem está na linha 3?
+        int coluna_linha3 = -1;
+        if (la == 3) coluna_linha3 = ca;
+        else if (lb == 3) coluna_linha3 = cb;
+        else if (lc == 3) coluna_linha3 = cc;
+        else if (ld == 3) coluna_linha3 = cd;
+        else if (le == 3) coluna_linha3 = ce;
+        if (coluna_linha3 != ca) continue;
+
+        // 7. Nenhum navio na mesma linha ou coluna
+        int colunas[5] = {ca, cb, cc, cd, ce};
+        int linhas[5] = {la, lb, lc, ld, le};
+        int ok = 1;
+        for (int i = 0; i < 5 && ok; i++) {
+            for (int j = i + 1; j < 5; j++) {
+                if (linhas[i] == linhas[j] || colunas[i] == colunas[j]) {
+                    ok = 0;
+                    break;
+                }
+            }
+        }
+        if (!ok) continue;
+
+        // Se chegou aqui, é a solução
+        const char* nomes[] = {"Arthur", "Bianca", "Caio", "Daniela", "Eduardo"};
+        const char colunasChar[] = {'A', 'B', 'C', 'D', 'E'};
+        int linhasFinal[] = {la, lb, lc, ld, le};
+        int colunasFinal[] = {ca, cb, cc, cd, ce};
+
+        printf("Solução encontrada:\n\n");
+        for (int i = 0; i < 5; i++) {
+            printf("%s: linha %d, coluna %c\n", nomes[i], linhasFinal[i], colunasChar[colunasFinal[i]]);
+        }
+        return 0;
+    }
+
+    printf("Nenhuma solução encontrada.\n");
+    return 0;
+}
