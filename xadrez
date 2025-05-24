@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <string.h>
+
+#define NUM_JOGADORES 4
+
+const char* nomes[] = {"Daniel", "Elisa", "Fernando", "Gabriela"};
+const char* cores[] = {"branca", "preta", "dourada", "prata"};
+
+int main() {
+    int i, j, k, l, m, n, o, p;
+    int perm[4];
+    int vit[4];
+
+    // Gera permutações para as cores (0 a 3) entre os jogadores
+    for (i = 0; i < 4; i++)
+    for (j = 0; j < 4; j++) if (j != i)
+    for (k = 0; k < 4; k++) if (k != i && k != j)
+    for (l = 0; l < 4; l++) if (l != i && l != j && l != k) {
+
+        // Atribuir cores aos jogadores
+        perm[0] = i; perm[1] = j; perm[2] = k; perm[3] = l;
+
+        // Gera permutações possíveis de vitórias (0,1,2,3) em ordem única
+        for (m = 0; m < 4; m++)
+        for (n = 0; n < 4; n++) if (n != m)
+        for (o = 0; o < 4; o++) if (o != m && o != n)
+        for (p = 0; p < 4; p++) if (p != m && p != n && p != o) {
+
+            vit[0] = m; vit[1] = n; vit[2] = o; vit[3] = p;
+
+            // Aplica as pistas:
+
+            // Daniel usou dourada (posição 0)
+            if (perm[0] != 2) continue;
+
+            // Daniel venceu só uma
+            if (vit[0] != 1) continue;
+
+            // Quem usou preta venceu todas
+            int jogadorPreto = -1;
+            for (int q = 0; q < 4; q++)
+                if (perm[q] == 1)
+                    jogadorPreto = q;
+            if (jogadorPreto == -1 || vit[jogadorPreto] != 3) continue;
+
+            // Quem usou prata perdeu todas
+            int jogadorPrata = -1;
+            for (int q = 0; q < 4; q++)
+                if (perm[q] == 3)
+                    jogadorPrata = q;
+            if (jogadorPrata == -1 || vit[jogadorPrata] != 0) continue;
+
+            // Fernando (índice 2) não usou branca
+            if (perm[2] == 0) continue;
+
+            // Fernando não perdeu todas
+            if (vit[2] == 0) continue;
+
+            // Gabriela (3) venceu mais que Elisa (1)
+            if (vit[3] <= vit[1]) continue;
+
+            // Se passou todos os filtros, imprime:
+            printf("Solução encontrada:\n\n");
+            for (int q = 0; q < 4; q++) {
+                printf("%s usou peças %s e venceu %d partida(s).\n",
+                    nomes[q], cores[perm[q]], vit[q]);
+            }
+
+            return 0; // Parar após a primeira solução válida
+        }
+    }
+
+    printf("Nenhuma solução encontrada.\n");
+    return 0;
+}
